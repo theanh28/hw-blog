@@ -1,0 +1,37 @@
+.app {
+  height: 100vh;
+}
+
+.bg-cover {
+  background-color: #273347;
+}
+.bg-paper {
+  background-color: #f9f9f9;
+}
+
+.blog-scale-bg {
+  margin-top: 15%;
+  z-index: 1;
+  transform: translate(0px, -300px);
+
+  & .blog-paper-shell {
+    transform: translate(0px, -100px);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+}
+
+.blog-paper {
+  padding-top: 10px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 36px;
+  min-height: 500px;
+  text-indent: 50px;
+  text-transform: title;
+  font-family: "Sans-Serif";
+
+  &::first-letter {
+    text-transform: capitalize;
+  }
+}
