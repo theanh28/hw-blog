@@ -1,9 +1,8 @@
 import { gql } from "apollo-server";
-import { PrismaClient } from "@prisma/client";
 
 const typeDef = gql`
   type Blog {
-    id: String
+    id: ID!
     title: String
     imgSrc: String
     body: String
@@ -17,6 +16,7 @@ const typeDef = gql`
 
   type Mutation {
     createBlog(title: String!, body: String!, imgSrc: String): Blog
+    updateBlog(id: ID!, title: String!, body: String!, imgSrc: String): Blog
   }
 `;
 
@@ -29,7 +29,7 @@ const resolver = (prisma) => ({
     getBlogById: (_, args) => {
       const { id } = args;
       return prisma.blogs.findUnique({
-        where: { id: id },
+        where: { id },
       });
     },
   },
@@ -37,6 +37,19 @@ const resolver = (prisma) => ({
     createBlog: (_, args) => {
       const { title, body, imgSrc } = args;
       return prisma.blogs.create({
+        data: {
+          title,
+          body,
+          imgSrc,
+        },
+      });
+    },
+    updateBlog: (_, args) => {
+      const { id, title, body, imgSrc } = args;
+      return prisma.blogs.update({
+        where: {
+          id,
+        },
         data: {
           title,
           body,

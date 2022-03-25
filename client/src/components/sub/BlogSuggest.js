@@ -8,7 +8,13 @@ const BlogSuggest = () => {
   const { loading, data: gqlData } = useQuery(GET_BLOGS, {
     variables: { take: 3 },
   });
-  const blogsData = gqlData?.getBlogs;
+  const [blogsData, setBlogsData] = useState([]);
+
+  useEffect(() => {
+    if (gqlData?.getBlogs) {
+      setBlogsData(gqlData.getBlogs);
+    }
+  }, [gqlData]);
 
   return (
     <>

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 
 import BlogHead from "./sub/BlogHead";
@@ -5,7 +6,13 @@ import { GET_BLOGS } from "./schemas/blogs";
 
 const HomePage = () => {
   const { loading, data: gqlData } = useQuery(GET_BLOGS);
-  const blogsData = gqlData?.getBlogs;
+  const [blogsData, setBlogsData] = useState([]);
+
+  useEffect(() => {
+    if (gqlData?.getBlogs) {
+      setBlogsData(gqlData.getBlogs);
+    }
+  }, [loading]);
 
   return (
     <div className="container my-5 overflow-auto">

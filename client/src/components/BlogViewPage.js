@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { GET_BLOG_BY_ID } from "./schemas/blogs";
@@ -10,37 +10,46 @@ const BlogViewPage = () => {
   const { loading, data: gqlData } = useQuery(GET_BLOG_BY_ID, {
     variables: { id: blogId },
   });
-  const blogData = gqlData?.getBlogById;
+  const [blogData, setBlogData] = useState({});
+
+  useEffect(() => {
+    if (gqlData?.getBlogById) {
+      setBlogData(gqlData.getBlogById);
+    }
+  }, [loading]);
 
   return (
     <>
-      {loading ? null : (
-        <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="container-fluid bg-1">
           <div className="container">
-            <div className="row sticky-top">
-              <div className="col-12 text-center bg-paper border-bottom border-primary">
-                <h1 className="display-3">{blogData.title}</h1>
+            <div className="row">
+              <div
+                className="col-12 text-white text-center border-bottom border-primary"
+                style={{ zIndex: 1 }}
+              >
+                <h1 className="blog-title">{blogData.title}</h1>
               </div>
             </div>
 
             <div
+              className="blog-bg-image"
               style={{
                 backgroundImage: `url(${blogData.imgSrc})`,
-                height: "100vh",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
               }}
             ></div>
-            <div className="row justify-content-around bg-white blog-scale-bg">
-              <div className="col-sm-7 bg-paper blog-paper blog-paper-shell">
+            <div className="row justify-content-around blog-scale-bg bg-5 rounded">
+              <div className="col-sm-7 blog-paper py-4">
                 <p>{blogData.body}</p>
               </div>
-              <div className="d-none d-sm-block col-sm-3 bg-paper blog-paper-shell">
+              <div className="col-sm-3">
                 <BlogSuggest />
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

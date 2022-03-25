@@ -3,22 +3,32 @@
 }
 
 .bg-cover {
-  background-color: #273347;
+  background-color: #081c15;
 }
-.bg-paper {
-  background-color: #f9f9f9;
+.bg-5 {
+  background-color: #d8f3dc;
+}
+.bg-2 {
+  background-color: #40916c;
+}
+.bg-1 {
+  background-color: #2d6a4f;
+}
+
+.blog-bg-image {
+  top: 10px;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.blog-title {
+  font-size: clamp(1.2rem, 1rem + 3.5vw, 4rem);
+  font-weight: 700;
 }
 
 .blog-scale-bg {
-  margin-top: 15%;
-  z-index: 1;
-  transform: translate(0px, -300px);
-
-  & .blog-paper-shell {
-    transform: translate(0px, -100px);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-  }
+  transform: translate(0px, -50vh);
 }
 
 .blog-paper {
@@ -30,6 +40,7 @@
   text-indent: 50px;
   text-transform: title;
   font-family: "Sans-Serif";
+  white-space: pre-line;
 
   &::first-letter {
     text-transform: capitalize;

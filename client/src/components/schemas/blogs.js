@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const GET_BLOGS = gql`
-  query ($take: Int){
+  query GetBlogs($take: Int) {
     getBlogs(take: $take) {
       blogId: id
       title
@@ -13,7 +13,7 @@ const GET_BLOGS = gql`
 `;
 
 const GET_BLOG_BY_ID = gql`
-  query ($id: ID!) {
+  query GetBlogById($id: ID!) {
     getBlogById(id: $id) {
       blogId: id
       title
@@ -24,4 +24,33 @@ const GET_BLOG_BY_ID = gql`
   }
 `;
 
-export { GET_BLOGS, GET_BLOG_BY_ID };
+const CREATE_BLOG = gql`
+  mutation CreateBlog($title: String!, $body: String!, $imgSrc: String) {
+    createBlog(title: $title, body: $body, imgSrc: $imgSrc) {
+      blogId: id
+      title
+      imgSrc
+      body
+      createdAt
+    }
+  }
+`;
+
+const UPDATE_BLOG = gql`
+  mutation UpdateBlog(
+    $id: ID!
+    $title: String!
+    $body: String!
+    $imgSrc: String
+  ) {
+    updateBlog(id: $id, title: $title, body: $body, imgSrc: $imgSrc) {
+      id
+      title
+      imgSrc
+      body
+      createdAt
+    }
+  }
+`;
+
+export { GET_BLOGS, GET_BLOG_BY_ID, CREATE_BLOG, UPDATE_BLOG };
