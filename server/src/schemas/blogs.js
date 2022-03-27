@@ -1,11 +1,13 @@
-import { gql } from "apollo-server";
+import { gql } from "apollo-server-express";
 
 const typeDef = gql`
   type Blog {
     id: ID!
-    title: String
-    imgSrc: String
-    body: String
+    title: String!
+    imgSrc: String!
+    body: String!
+    authorId: ID!
+    author: User
     createdAt: String
   }
 
@@ -15,49 +17,86 @@ const typeDef = gql`
   }
 
   type Mutation {
-    createBlog(title: String!, body: String!, imgSrc: String): Blog
-    updateBlog(id: ID!, title: String!, body: String!, imgSrc: String): Blog
+    createBlog(title: String!, body: String!, imgSrc: String!): Blog
+    updateBlog(id: ID!, title: String!, body: String!, imgSrc: String!): Blog
   }
 `;
 
 const resolver = (prisma) => ({
   Query: {
-    getBlogs: (_, args) => {
-      const { take } = args;
-      return prisma.blogs.findMany({ take });
+    getBlogs: async (parent, args) => {
+      try {
+        const { take } = args;
+        const result = await prisma.blog.findMany({
+          take,
+          include: {
+            author: true,
+          },
+        });
+        return result;
+      } catch (err) {
+        console.log("getBlogs error:", err);
+      }
     },
-    getBlogById: (_, args) => {
-      const { id } = args;
-      return prisma.blogs.findUnique({
-        where: { id },
-      });
+    getBlogById: async (parent, args) => {
+      try {
+        const { id } = args;
+        const result = await prisma.blog.findUnique({
+          where: { id },
+          include: {
+            author: true,
+          },
+        });
+        return result;
+      } catch (err) {
+        console.log("getBlogById error:", err);
+      }
     },
   },
   Mutation: {
-    createBlog: (_, args) => {
-      const { title, body, imgSrc } = args;
-      return prisma.blogs.create({
-        data: {
-          title,
-          body,
-          imgSrc,
-        },
-      });
+    createBlog: async (parent, args, context) => {
+      try {
+        const { title, body, imgSrc } = args;
+        const { user } = context;
+        const { id: verifiedUserId, username: verifiedUsername } = user;
+
+        const authorId = verifiedUserId;
+        const result = await prisma.blog.create({
+          data: {
+            title,
+            body,
+            imgSrc,
+            authorId,
+          },
+        });
+        return result;
+      } catch (err) {
+        console.log("createBlog error:", err);
+      }
     },
-    updateBlog: (_, args) => {
-      const { id, title, body, imgSrc } = args;
-      return prisma.blogs.update({
-        where: {
-          id,
-        },
-        data: {
-          title,
-          body,
-          imgSrc,
-        },
-      });
+    updateBlog: async (parent, args) => {
+      try {
+        const { id, title, body, imgSrc } = args;
+        const { user } = context;
+        const { id: verifiedUserId, username: verifiedUsername } = user;
+        const authorId = verifiedUserId;
+        const result = await prisma.blog.update({
+          where: {
+            id,
+            authorId,
+          },
+          data: {
+            title,
+            body,
+            imgSrc,
+          },
+        });
+        return result;
+      } catch (err) {
+        console.log("updateBlog error:", err);
+      }
     },
   },
 });
 
-module.exports = { typeDef, resolver };
+export default { typeDef, resolver };

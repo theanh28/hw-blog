@@ -6,7 +6,7 @@ import { CREATE_BLOG, GET_BLOG_BY_ID, UPDATE_BLOG } from "./schemas/blogs";
 import { urlRegex } from "./helper";
 
 const BlogEditPage = ({ type }) => {
-  const { blogId } = useParams();
+  let { blogId } = useParams();
   const [formData, setFormData] = useState({ title: "", imgSrc: "", body: "" });
   const [formError, setFormError] = useState({});
   const [mutateBlog, { data: mutateData, loading: mutateLoading }] =

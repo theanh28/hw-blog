@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 const BlogHead = ({ title, body, imgSrc, blogId, className }) => {
   const navigate = useNavigate();

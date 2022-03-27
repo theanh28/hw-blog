@@ -8,6 +8,9 @@ const GET_BLOGS = gql`
       imgSrc
       body
       createdAt
+      author {
+        username
+      }
     }
   }
 `;
@@ -20,18 +23,24 @@ const GET_BLOG_BY_ID = gql`
       imgSrc
       body
       createdAt
+      author {
+        username
+      }
     }
   }
 `;
 
 const CREATE_BLOG = gql`
-  mutation CreateBlog($title: String!, $body: String!, $imgSrc: String) {
+  mutation CreateBlog($title: String!, $body: String!, $imgSrc: String!) {
     createBlog(title: $title, body: $body, imgSrc: $imgSrc) {
       blogId: id
       title
       imgSrc
       body
       createdAt
+      author {
+        username
+      }
     }
   }
 `;
@@ -49,6 +58,9 @@ const UPDATE_BLOG = gql`
       imgSrc
       body
       createdAt
+      author {
+        username
+      }
     }
   }
 `;

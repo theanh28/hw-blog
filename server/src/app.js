@@ -1,23 +1,52 @@
-require("dotenv").config();
+import dotenv from "dotenv";
 
-import { ApolloServer } from "apollo-server";
+import cors from "cors";
+import express from "express";
+import http from "http";
+import cookieParser from 'cookie-parser'
+import jwt from 'jsonwebtoken'
 
-import prismaConnect from "./schemas/prismaConnect";
-import Blogs from "./schemas/blogs";
+import prismaConnect from "./prismaConnect.js";
+import { createApolloServer } from "./schemas/index.js";
 
-const typeDefs = [Blogs.typeDef];
+dotenv.config();
 
-let resolvers;
+const port = process.env.PORT;
+const jwtSecret = process.env.JWT_SECRET;
 
-prismaConnect()
-  .then((prisma) => {
-    resolvers = {
-      ...Blogs.resolver(prisma),
-    };
+const prisma = await prismaConnect();
 
-    const server = new ApolloServer({ typeDefs, resolvers });
+const app = express();
+const httpServer = http.createServer(app);
 
-    server.listen().then(({ url }) => {
-      console.log(`🚀  Server ready at ${url}`);
-    });
-  });
+const corsOptions = {
+  origin: true,
+  credentials: true
+}
+app.use(cors(corsOptions));
+app.use(cookieParser())
+
+const server = createApolloServer({
+  prisma,
+  httpServer,
+  context: ({ req, res }) => {
+    let user = {}
+    try {
+      user = jwt.verify(req.cookies["access-token"], jwtSecret)
+    } catch(err) {
+      // Unsuitable access token
+    }
+    return { user, res };
+  },
+});
+
+await server.start();
+
+server.applyMiddleware({
+  app,
+  path: "/graphql",
+  cors: false,
+});
+
+httpServer.listen({ port });
+console.log(`🚀  Server ready at ${process.env.BASE_URL}${server.graphqlPath}`);
