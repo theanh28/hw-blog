@@ -24,7 +24,7 @@ const corsOptions = {
   credentials: true
 }
 app.use(cors(corsOptions));
-app.use(cookieParser())
+app.use(cookieParser()); 
 
 const server = createApolloServer({
   prisma,
@@ -34,7 +34,7 @@ const server = createApolloServer({
     try {
       user = jwt.verify(req.cookies["access-token"], jwtSecret)
     } catch(err) {
-      // Unsuitable access token
+      // Unsuitable/non-exist access token
     }
     return { user, res };
   },
@@ -49,4 +49,4 @@ server.applyMiddleware({
 });
 
 httpServer.listen({ port });
-console.log(`🚀  Server ready at ${process.env.BASE_URL}${server.graphqlPath}`);
+console.log(`🚀  Server ready at ${process.env.BASE_URL}:${port}${server.graphqlPath}`);
